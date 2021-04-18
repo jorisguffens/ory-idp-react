@@ -1,0 +1,20 @@
+.verticalCenterWrapper {
+  display: table;
+  height: 100%;
+  width: 100%;
+}
+
+.verticalCenterContainer {
+  display: table-cell;
+  vertical-align: middle;
+  width: 100%;
+}
+
+.horizontalCenterContainer {
+  display: table;
+  margin: 0 auto;
+}
+
+.fillPage {
+  height: calc(100vh - 64px);
+}
