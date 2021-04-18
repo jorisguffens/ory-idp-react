@@ -2,7 +2,7 @@ version: v0.4.6-alpha.1
 
 serve:
   public:
-    base_url: http://127.0.0.1:4433/
+    base_url: http://127.0.0.1/
     cors:
       enabled: true
   admin:

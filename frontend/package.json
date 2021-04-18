@@ -13,7 +13,8 @@
     "react-query": "^3.13.10",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^4.0.3"
+    "react-scripts": "^4.0.3",
+    "typescript": "^4.2.4"
   },
   "devDependencies": {
     "css-loader": "^5.2.1",
