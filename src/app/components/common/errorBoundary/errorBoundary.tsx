@@ -22,6 +22,10 @@ export default class ErrorBoundary extends React.Component<any, any> {
             return (<>{this.props.children}</>);
         }
 
+        if ( !this.props.fallback ) {
+            return null;
+        }
+
         if ( typeof this.props.fallback === 'function' ) {
             return this.props.fallback();
         }

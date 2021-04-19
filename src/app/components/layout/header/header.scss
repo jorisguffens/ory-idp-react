@@ -1,0 +1,29 @@
+
+.root {
+  z-index: 1300;
+
+  & a {
+    color: #fff;
+    text-decoration: none;
+  }
+}
+
+.title {
+  display: flex;
+  flex: 0 0;
+
+  align-items: center;
+
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.contents {
+  display: flex;
+  width: 100%;
+}
+
+.menu {
+  flex: 1 0 auto;
+  text-align: right;
+}

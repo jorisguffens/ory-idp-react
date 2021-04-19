@@ -1,0 +1,14 @@
+.root {
+  min-height: 100vh;
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex: 1 0;
+}
+
+.body {
+  flex: 1 0 auto;
+  padding-top: 25px;
+}

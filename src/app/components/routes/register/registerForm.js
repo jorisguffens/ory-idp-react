@@ -66,15 +66,24 @@ export default function RegisterForm({flowId}) {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         }).then(res => {
-            if (res.redirected) {
-                const prefix = window.location.protocol + "//" + window.location.hostname;
-                if (res.url.startsWith(prefix)) {
-                    history.push(res.url.substr(prefix.length));
-                } else {
-                    //window.location.href = res.url;
-                }
+            if ( !res.redirected ) {
+                return; // that's unusual
             }
-            refresh();
+            
+            // just refresh info
+            if ( res.url === window.location.href ) {
+                refresh();
+                return;
+            }
+
+            // go to new page
+            const prefix = window.location.protocol + "//" + window.location.hostname;
+            if (res.url.startsWith(prefix)) {
+                history.push(res.url.substr(prefix.length));
+                return;
+            }
+
+            // oh oh
         }).catch(err => {
             setErrors(err.message);
         }).finally(() => {

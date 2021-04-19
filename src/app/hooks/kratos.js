@@ -90,3 +90,15 @@ export function useErrorView(errorId) {
         return kratos.getSelfServiceError(errorId).then(({data}) => data);
     });
 }
+
+const whoamiRequests = {};
+export function useAuth() {
+    const { data, refresh } = useSuspender(whoamiRequests, 1, () => {
+        return kratos.whoami().then(({data}) => data);
+        // return fetch("/sessions/whoami", {
+        //     credentials: "include"
+        // }).then((res) => res.json());
+    });
+
+    return { session: data, user: data.identity };
+}
