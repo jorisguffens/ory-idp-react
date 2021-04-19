@@ -16,9 +16,8 @@ export function makePromise() {
     return {promise, resolve, reject};
 }
 
-export function makeSuspender(fetcher) {
+export function makeSuspender(promise) {
     let result;
-    const promise = fetcher();
     const suspender = promise.then(response => {
         result = response;
         console.log(result);
@@ -44,24 +43,38 @@ export function useKratos() {
 }
 
 export function useSuspender(collection, id, init, timeout) {
-    function unset() {
-        delete collection[id];
+
+    const [data, setData] = useState(null);
+
+    function refresh() {
+        const promise = init();
+        const suspender = makeSuspender(promise);
+        promise.then((res) => {
+            collection[id] = suspender;
+            setData(res);
+        });
     }
 
-    if ( collection[id] ) {
-        return [collection[id](), unset];
+    if ( data ) {
+        return { data, refresh };
     }
 
-    const suspender = makeSuspender(init);
-    collection[id] = () => suspender();
+    if ( !collection[id] ) {
+        const promise = init();
+        collection[id] = makeSuspender(promise);
 
-    if ( timeout ) {
-        setTimeout(() => {
-            delete collection[id];
-        }, timeout);
+        if ( timeout ) {
+            setTimeout(() => {
+                delete collection[id];
+            }, timeout);
+        }
     }
 
-    return [suspender(), unset];
+    const result = collection[id]();
+    if ( result !== data ) {
+        setData(result);
+    }
+    return { data: result, refresh };
 }
 
 const registerFlows = {};

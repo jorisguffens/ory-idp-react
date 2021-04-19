@@ -10,4 +10,11 @@ export default createMuiTheme({
             dark: "#c8a451"
         },
     },
+    overrides: {
+        MuiPaper: {
+            root: {
+                padding: "60px 25px"
+            }
+        },
+    }
 });

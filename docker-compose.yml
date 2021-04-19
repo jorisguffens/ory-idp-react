@@ -15,10 +15,6 @@ services:
     ports:
       - 80:80
 
-# For linux  
-#    extra_hosts:
-#      host.docker.internal: 172.17.0.1
-
   # KRATOS
   kratos-postgres:
     image: postgres:9.6
