@@ -1,17 +1,18 @@
 import React from "react";
+import {Link} from "react-router-dom";
 
-import {AppBar, Hidden, IconButton, Link, Toolbar} from "@material-ui/core";
+import {AppBar, Hidden, IconButton, Toolbar} from "@material-ui/core";
 
 import style from "./header.scss";
 
-export default function Header({ onDrawerToggle }) {
+export default function Header({onDrawerToggle}) {
 
     return (
         <AppBar position="fixed" className={style.root}>
             <Toolbar>
                 <div className={style.contents}>
                     <div className={style.title}>
-                        <Link>
+                        <Link to={"/"}>
                             Pogboer
                         </Link>
                     </div>

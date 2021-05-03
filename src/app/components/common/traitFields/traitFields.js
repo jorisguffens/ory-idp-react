@@ -12,8 +12,12 @@ export default function TraitFields({traits, onChange}) {
     function parseTraitName(trait) {
         let name = ""
         const parts = trait.name.split(".");
-        for (let i = parts.length - 1; i > 0; i--) {
-            name += parts[i] + " ";
+        if ( parts.length > 1 && parts[0] === "traits") {
+            for (let i = parts.length - 1; i > 0; i--) {
+                name += parts[i] + " ";
+            }
+        } else {
+            name = trait.name;
         }
         return name.substr(0, 1).toUpperCase() + name.substr(1);
     }
@@ -21,6 +25,10 @@ export default function TraitFields({traits, onChange}) {
     return (
         <>
             {traits.map((trait, i) => {
+                if ( trait.name === "csrf_token") {
+                    return null;
+                }
+
                 const props = {
                     label: parseTraitName(trait),
                     value: trait.value ? trait.value : "",

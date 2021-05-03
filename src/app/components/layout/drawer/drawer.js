@@ -20,28 +20,24 @@ import style from "./drawer.scss";
 
 export default function Drawer({open, onClose, onOpen}) {
 
-    const {user} = useAuth();
+    const { user, isAuthenticated } = useAuth();
 
     const contents = (
         <>
 
-            <div className={style.avatar}>
-                <Avatar/>
-                <Typography className={style.avatarName}>
-                    { user.traits.name.first } { user.traits.name.last }
-                </Typography>
-            </div>
+            { isAuthenticated ? (
+                <div className={style.avatar}>
+                    <Avatar/>
+                    <Typography className={style.avatarName}>
+                        { user.traits.name.first } { user.traits.name.last }
+                    </Typography>
+                </div>
+            ) : null }
 
             <List>
-                <RouterLink to={"/profile"}>
-                    <ListItem button>
-                        <ListItemIcon>
-                            <i className="fas fa-sign-out-alt"/>
-                        </ListItemIcon>
-                        <ListItemText primary="Logout"/>
-                    </ListItem>
-                </RouterLink>
                 <Divider/>
+                <br/>
+
                 <RouterLink to={"/profile"}>
                     <ListItem button>
                         <ListItemIcon>
@@ -58,6 +54,19 @@ export default function Drawer({open, onClose, onOpen}) {
                         <ListItemText primary="Security settings"/>
                     </ListItem>
                 </RouterLink>
+
+                <br/>
+                <Divider/>
+                <br/>
+
+                <a href={"/self-service/browser/flows/logout"}>
+                    <ListItem button>
+                        <ListItemIcon>
+                            <i className="fas fa-sign-out-alt"/>
+                        </ListItemIcon>
+                        <ListItemText primary="Logout"/>
+                    </ListItem>
+                </a>
             </List>
         </>
     );

@@ -4,17 +4,20 @@ export default class ErrorBoundary extends React.Component<any, any> {
 
     constructor(props) {
         super(props);
+
         this.state = {
-            error: null,
-            errorInfo: null
+            error: null
         };
     }
 
-    componentDidCatch(error, errorInfo) {
+    componentDidCatch(error) {
         this.setState({
-            error: error,
-            errorInfo: errorInfo,
+            error: true
         });
+
+        if ( this.props.onError ) {
+            this.props.onError(error);
+        }
     }
 
     render() {
@@ -24,10 +27,6 @@ export default class ErrorBoundary extends React.Component<any, any> {
 
         if ( !this.props.fallback ) {
             return null;
-        }
-
-        if ( typeof this.props.fallback === 'function' ) {
-            return this.props.fallback();
         }
 
         return this.props.fallback;

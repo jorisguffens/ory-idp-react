@@ -1,10 +1,9 @@
 import React from "react";
-import {Route, Switch, useLocation, Redirect} from "react-router-dom";
+import {Route, Switch, useLocation} from "react-router-dom";
 
-import Login from "./components/routes/login/login";
-import Register from "./components/routes/register/register";
-import Error from "./components/routes/error/error";
-import Profile from "./components/routes/profile/profile";
+import Error from "./components/routes/self-service/error/error";
+import SelfService from "./components/routes/self-service/self-service";
+import Authentication from "./components/routes/authentication/authentication";
 
 function ScrollToTop() {
     const { pathname } = useLocation();
@@ -26,17 +25,9 @@ export default function Router() {
                 <Route exact path={"/error"} component={Error}/>
 
                 {/* Authentication */}
-                <Route exact path={"/auth/login"} component={Login}/>
-                <Route exact path={"/auth/register"} component={Register}/>
+                <Route path={"/auth"} component={Authentication}/>
 
-                {/* Redirect to profile */}
-                <Route exact path={"/"}>
-                    <Redirect to={"/profile"}/>
-                </Route>
-
-                <Route exact path={"/profile"} component={Profile}/>
-
-                <p>404</p>
+                <Route path={"/"} component={SelfService}/>
             </Switch>
         </>
     )
