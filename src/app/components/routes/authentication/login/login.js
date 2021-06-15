@@ -1,11 +1,13 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
+import {useHistory} from "react-router";
 
-import {Button, CircularProgress, Typography} from "@material-ui/core";
+import {Typography} from "@material-ui/core";
 import {Alert} from "@material-ui/lab";
 
-import {parseMethods, submitForm, useDataLoader, useKratos} from "../../../../hooks/kratos";
+import {submitForm, useDataLoader, useKratos} from "../../../../hooks/kratos";
 import DefaultLoader from "../../../common/defaultLoader/defaultLoader";
-import TraitFields from "../../../common/traitFields/traitFields";
+import PasswordForm from "../../../common/passwordForm/passwordForm";
+import {Link} from "react-router-dom";
 
 export default function Login({flowId}) {
 
@@ -28,35 +30,38 @@ export default function Login({flowId}) {
 function LoginForm({flowInfo}) {
 
     const kratos = useKratos();
-    const [flow, setFlow] = useState(flowInfo);
 
-    // fields state
-    const [traits, setTraits] = useState([]);
+    const [flow, setFlow] = useState(flowInfo);
+    const config = flow.ui;
+
+    const history = useHistory();
 
     // handling
     const [busy, setBusy] = useState(false);
     const [errors, setErrors] = useState("");
 
-    // calculate everything from state
-    const {passwordMethodConfig, passwordMethodFields, socialMethods} = parseMethods(flow);
-    useEffect(() => {
-        setTraits(passwordMethodFields);
-    }, []);
+    function submit(nodes) {
+        if ( busy ) {
+            return;
+        }
 
-    function submit(event) {
-        event.preventDefault();
         setBusy(true);
 
-        submitForm(passwordMethodConfig.action, passwordMethodConfig.method, traits).then(success => {
-            if ( success ) {
+        submitForm(config.action, config.method, nodes, history).then(success => {
+            if (success) {
                 return;
             }
 
             kratos.getSelfServiceLoginFlow(flow.id).then(({data}) => {
                 setFlow(data);
+
+                if ( data.ui.messages ) {
+                    setErrors(data.ui.messages.map(msg => msg.text).join("\n"));
+                }
             });
             setBusy(false);
         }).catch(err => {
+            console.error(err);
             setErrors(err.message);
             setBusy(false);
         });
@@ -69,34 +74,28 @@ function LoginForm({flowInfo}) {
             <Typography variant="h2" component={"h1"}>Login</Typography>
             <br/>
 
-            {errors ? (
+            {errors && (
                 <>
-                    <Alert severity="error">
+                    <Alert severity="error" align="left">
                         {errors.split("\n").map((line, i) => <span key={i}>{line}<br/></span>)}
                     </Alert>
                     <br/><br/>
                 </>
-            ) : null}
+            )}
 
-            {socialMethods.length > 0 ? (
-                <>
-                    <div align={"center"}>SOCIAL LOGIN HERE</div>
-                    <hr/>
-                </>
-            ) : null}
+            {/*{socialMethods.length > 0 && (*/}
+            {/*    <>*/}
+            {/*        <div align={"center"}>SOCIAL LOGIN HERE</div>*/}
+            {/*        <hr/>*/}
+            {/*    </>*/}
+            {/*)}*/}
 
-            <form onSubmit={submit}>
-                <TraitFields traits={traits} onChange={(value) => setTraits(value)}/>
-
-                <Button color={"secondary"} variant={"contained"} type={"submit"} disabled={busy}>
-                    {busy ? <CircularProgress size={20}/> : "Login"}
-                </Button>
-            </form>
+            <PasswordForm config={config} onSubmit={submit}/>
             <br/><br/>
 
-            <a href="/self-service/registration/browser">
+            <Link to={"/auth/register"}>
                 I don't have an account yet.
-            </a>
+            </Link>
         </>
     )
 }

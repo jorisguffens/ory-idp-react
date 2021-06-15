@@ -12,7 +12,7 @@ import Profile from "./profile/profile";
 export default function SelfService() {
 
     const { isAuthenticated, isLoading } = useAuth();
-    console.log(isLoading);
+
     if ( isLoading ) {
         return (
             <Center fillPage vertical horizontal>

@@ -59,7 +59,7 @@ export default function Drawer({open, onClose, onOpen}) {
                 <Divider/>
                 <br/>
 
-                <a href={"/self-service/browser/flows/logout"}>
+                <a href={"/.ory/kratos/self-service/browser/flows/logout"}>
                     <ListItem button>
                         <ListItemIcon>
                             <i className="fas fa-sign-out-alt"/>

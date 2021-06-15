@@ -17,11 +17,11 @@ export default function Authentication() {
     return (
         <Switch>
             <Route exact path={url + "/login"}>
-                <WrappedAuthRoute initUrl={"/self-service/login/browser"} component={Login}/>
+                <WrappedAuthRoute initUrl={"/.ory/kratos/self-service/login/browser"} component={Login}/>
             </Route>
 
             <Route exact path={url + "/register"}>
-                <WrappedAuthRoute initUrl={"/self-service/registration/browser"} component={Register}/>
+                <WrappedAuthRoute initUrl={"/.ory/kratos/self-service/registration/browser"} component={Register}/>
             </Route>
 
             <Redirect to={url + "/login"}/>
@@ -35,12 +35,23 @@ function WrappedAuthRoute({initUrl, component}) {
 
     // initialize login flow
     if (!params.flow) {
+
+        // just a reminder to use this app behind a proxy, even I fall for the same mistake everytime
+        const val = sessionStorage.getItem("redirect_count");
+        if ( val >= 5 ) {
+            sessionStorage.setItem("redirect_count", "0");
+            window.alert("Too many redirects, please use this app behind a proxy!");
+            return null;
+        } else {
+            sessionStorage.setItem("redirect_count", (val ? parseInt(val) + 1 : 1) + "");
+        }
+
         window.location.href = initUrl;
         return null;
     }
 
     function handleError() {
-        window.location.href = initUrl;
+        //window.location.href = initUrl;
     }
 
     const Comp = component;

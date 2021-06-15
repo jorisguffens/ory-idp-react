@@ -2,7 +2,7 @@ import {Configuration, PublicApi} from '@ory/kratos-client';
 import {useEffect, useState} from "react";
 
 // initialize kratos public api
-const url = window.location.protocol + "//" + window.location.hostname;
+const url = window.location.protocol + "//" + window.location.hostname + "/.ory/kratos";
 const kratos = new PublicApi(new Configuration({basePath: url}));
 
 // hooks
@@ -37,7 +37,7 @@ export function useDataLoader(init) {
 let user = null;
 export function useAuth() {
     const { isLoading } = useDataLoader(() => {
-        return kratos.whoami().then(({data}) => {
+        return kratos.toSession().then(({data}) => {
             user = data.identity;
             console.log(user);
             return user;
@@ -63,24 +63,10 @@ export function useSelfServiceError(errorId) {
 }
 
 // other
-export function parseMethods(flow) {
-    const socialMethods = [];
-    for (let method of Object.keys(flow.methods)) {
-        if (method.method === "oidc") {
-            socialMethods.push(method);
-        }
-    }
-
-    const passwordMethodConfig = flow.methods.password.config;
-    const passwordMethodFields = passwordMethodConfig.fields;
-
-    return { socialMethods, passwordMethodConfig, passwordMethodFields }
-}
-
-export function submitForm(url, method, fields) {
+export function submitForm(url, method, nodes, routerHistory) {
     const formData = new FormData();
-    for (let field of fields) {
-        formData.set(field.name, field.value);
+    for (let node of nodes) {
+        formData.set(node.attributes.name, node.attributes.value);
     }
 
     const body = [...formData.entries()]
@@ -107,7 +93,8 @@ export function submitForm(url, method, fields) {
         // go to new page
         const prefix = window.location.protocol + "//" + window.location.hostname;
         if (res.url.startsWith(prefix)) {
-            window.location.href = res.url.substr(prefix.length);
+            routerHistory.push(res.url.substr(prefix.length));
+            //window.location.href = res.url.substr(prefix.length);
             return true;
         }
 

@@ -1,44 +1,78 @@
 version: '3.5'
 
+volumes:
+  database:
+
 services:
-
-#  server:
-#    build: ./server
-
-#  frontend:
-#    build: ./frontend
-    
+  
+  # REVERSE PROXY
   nginx:
     image: nginx
+    container_name: sidp-nginx
     volumes:
-    - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    - ./nginx.dev.conf:/etc/nginx/conf.d/default.conf
     ports:
       - 80:80
 
-  # KRATOS
-  kratos-postgres:
-    image: postgres:9.6
-    container_name: kratos-postgres
+  # DATABASE
+  postgres:
+    image: postgres
+    container_name: sidp-postgres
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_DB=kratos
-      - POSTGRES_USER=$KRATOS_DB_USER
-      - POSTGRES_PASSWORD=$KRATOS_DB_PASSWORD
+      - POSTGRES_USER=$DB_USER
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+    volumes:
+      - ./initdbs.sql:/docker-entrypoint-initdb.d/init.sql
+      - database:/var/lib/postgresql/data
 
+  # KRATOS
   kratos-migrate:
     image: oryd/kratos
+    container_name: sidp-kratos-migrate
+    restart: on-failure
     command: migrate sql -e --yes
     environment:
-      - DSN=postgres://$KRATOS_DB_USER:$KRATOS_DB_PASSWORD@kratos-postgres:5432/kratos?sslmode=disable&max_conns=20&max_idle_conns=4
+      - DSN=postgres://$DB_USER:$DB_PASSWORD@sidp-postgres:5432/kratos?sslmode=disable&max_conns=20&max_idle_conns=4
     volumes:
       - ./kratos:/etc/config/kratos
 
   kratos:
     image: oryd/kratos
-    container_name: kratos
+    container_name: sidp-kratos
+    restart: on-failure
     command: serve -c /etc/config/kratos/.kratos.yml --dev
     environment:
-      - DSN=postgres://$KRATOS_DB_USER:$KRATOS_DB_PASSWORD@kratos-postgres:5432/kratos?sslmode=disable&max_conns=20&max_idle_conns=4
+      - DSN=postgres://$DB_USER:$DB_PASSWORD@sidp-postgres:5432/kratos?sslmode=disable&max_conns=20&max_idle_conns=4
     volumes:
       - ./kratos:/etc/config/kratos
+  
+  # HYDRA
+  hydra-migrate:
+    image: oryd/hydra:latest-alpine
+    container_name: sidp-hydra-migrate
+    restart: on-failure
+    environment:
+      - DSN=postgres://$DB_USER:$DB_PASSWORD@sidp-postgres:5432/hydra?sslmode=disable&max_conns=20&max_idle_conns=4
+    command:
+      migrate sql -e --yes
+      
+  hydra:
+    image: oryd/hydra:latest-alpine
+    container_name: sidp-hydra
+    restart: on-failure
+    ports:
+      - "5555:5555" # Port for hydra token user
+    command: serve all --dangerous-force-http
+    environment:
+      - DSN=postgres://$DB_USER:$DB_PASSWORD@sidp-postgres:5432/hydra?sslmode=disable&max_conns=20&max_idle_conns=4
+      - LOG_LEAK_SENSITIVE_VALUES=true
+      - URLS_SELF_ISSUER=http://127.0.0.1
+      - URLS_SELF_PUBLIC=http://127.0.0.1
+      - URLS_CONSENT=http://127.0.0.1/auth/hydra/consent
+      - URLS_LOGIN=http://127.0.0.1/auth/hydra/login
+      - URLS_LOGOUT=http://127.0.0.1/logout
+      - SECRETS_SYSTEM=-->>--YouReallyNeedToChangeThis--<<--
+      - OIDC_SUBJECT_IDENTIFIERS_SUPPORTED_TYPES=public,pairwise
+      - OIDC_SUBJECT_IDENTIFIERS_PAIRWISE_SALT=-->>--YouReallyNeedToChangeThis--<<--
