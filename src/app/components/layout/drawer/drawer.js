@@ -16,7 +16,7 @@ import {
 
 import {useAuth} from "../../../hooks/kratos";
 
-import style from "./drawer.scss";
+import style from "./drawer.module.scss";
 
 export default function Drawer({open, onClose, onOpen}) {
 

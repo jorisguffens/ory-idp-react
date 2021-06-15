@@ -19,13 +19,12 @@
   "devDependencies": {
     "css-loader": "^5.2.1",
     "node-sass": "^5.0.0",
-    "react-app-rewired": "^2.1.8",
     "style-loader": "^2.0.0"
   },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
-    "test": "react-app-rewired test --env=jsdom",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

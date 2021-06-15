@@ -1,7 +1,7 @@
 import React from "react";
 import clsx from "clsx";
 
-import style from "./center.scss";
+import style from "./center.module.scss";
 
 export default function Center({ vertical, horizontal, fillPage, className, children }) {
     if ( vertical && horizontal ) {

@@ -1,8 +1,8 @@
 import React from "react";
 import {Route, Switch, useLocation} from "react-router-dom";
 
-import Error from "./components/routes/self-service/error/error";
-import SelfService from "./components/routes/self-service/self-service";
+import Error from "./components/routes/selfService/error/error";
+import SelfService from "./components/routes/selfService/selfService";
 import Authentication from "./components/routes/authentication/authentication";
 
 function ScrollToTop() {

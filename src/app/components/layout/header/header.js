@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 
 import {AppBar, Hidden, IconButton, Toolbar} from "@material-ui/core";
 
-import style from "./header.scss";
+import style from "./header.module.scss";
 
 export default function Header({onDrawerToggle}) {
 

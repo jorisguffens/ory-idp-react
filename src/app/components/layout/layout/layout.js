@@ -6,7 +6,7 @@ import Header from "../header/header";
 import Footer from "../footer/footer";
 import Drawer from "../drawer/drawer";
 
-import style from "./layout.scss";
+import style from "./layout.module.scss";
 
 function Layout({children}) {
 
