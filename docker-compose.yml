@@ -47,6 +47,8 @@ services:
       - DSN=postgres://$DB_USER:$DB_PASSWORD@sidp-postgres:5432/kratos?sslmode=disable&max_conns=20&max_idle_conns=4
     volumes:
       - ./kratos:/etc/config/kratos
+    ports:
+      - "4433:4433"
   
   # HYDRA
   hydra-migrate:
@@ -63,7 +65,7 @@ services:
     container_name: sidp-hydra
     restart: on-failure
     ports:
-      - "5555:5555" # Port for hydra token user
+      - "4445:4445"
     command: serve all --dangerous-force-http
     environment:
       - DSN=postgres://$DB_USER:$DB_PASSWORD@sidp-postgres:5432/hydra?sslmode=disable&max_conns=20&max_idle_conns=4
