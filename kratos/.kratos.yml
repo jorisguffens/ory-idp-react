@@ -5,6 +5,8 @@ serve:
     base_url: http://127.0.0.1/.ory/kratos/
     cors:
       enabled: true
+      exposed_headers:
+      - 'Location'
   admin:
     base_url: http://kratos:4434/
 

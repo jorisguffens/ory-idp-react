@@ -1,9 +1,9 @@
-import {Configuration, PublicApi} from '@ory/kratos-client';
+import {Configuration as KratosConfiguration, V0alpha1Api as KratosPublicApi} from '@ory/kratos-client';
 import {useEffect, useState} from "react";
 
 // initialize kratos public api
 const url = window.location.protocol + "//" + window.location.hostname + "/.ory/kratos";
-const kratos = new PublicApi(new Configuration({basePath: url}));
+const kratos = new KratosPublicApi(new KratosConfiguration({basePath: url}));
 
 // hooks
 export function useKratos() {
@@ -37,9 +37,15 @@ export function useDataLoader(init) {
 let user = null;
 export function useAuth() {
     const { isLoading } = useDataLoader(() => {
+        if ( user != null ) {
+            return Promise.resolve(user);
+        }
+
         return kratos.toSession().then(({data}) => {
             user = data.identity;
-            console.log(user);
+            user.firstname = user.traits.name.first;
+            user.lastname = user.traits.name.last;
+            user.fullname = user.traits.name.first + " " + user.traits.name.last;
             return user;
         });
     });
@@ -63,7 +69,7 @@ export function useSelfServiceError(errorId) {
 }
 
 // other
-export function submitForm(url, method, nodes, routerHistory) {
+export function submitForm(url, method, nodes, return_to = null) {
     const formData = new FormData();
     for (let node of nodes) {
         formData.set(node.attributes.name, node.attributes.value);
@@ -77,27 +83,23 @@ export function submitForm(url, method, nodes, routerHistory) {
         method: method,
         credentials: "include",
         body: body,
+        redirect: return_to != null ? "manual" : "follow",
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     }).then(res => {
-        if ( !res.redirected ) {
-            return; // that's unusual
+        if ( return_to ) {
+            window.location.href = return_to;
+        } else {
+            console.log(res.url); // TODO
+            //window.location.href = res.url;
         }
-
-        // just refresh info
-        if ( res.url === window.location.href ) {
-            return false;
-        }
-
-        // go to new page
-        const prefix = window.location.protocol + "//" + window.location.hostname;
-        if (res.url.startsWith(prefix)) {
-            routerHistory.push(res.url.substr(prefix.length));
-            //window.location.href = res.url.substr(prefix.length);
-            return true;
-        }
-
         return false;
+    });
+}
+
+export function logout() {
+    kratos.createSelfServiceLogoutFlowUrlForBrowsers().then(res => {
+        window.location.href = res.data.logout_url;
     });
 }

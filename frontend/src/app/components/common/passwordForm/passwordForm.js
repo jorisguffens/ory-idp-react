@@ -3,7 +3,7 @@ import React, {useState} from "react";
 import {Button, TextField} from "@material-ui/core";
 
 export default function PasswordForm({ config, onSubmit }) {
-    console.log(config);
+
     const [nodes, setNodes] = useState(config.nodes);
 
     function update(node, value) {
@@ -36,10 +36,17 @@ export default function PasswordForm({ config, onSubmit }) {
 }
 
 function NodeTextField({ node, autoFocus, onChange }) {
-    const label = node.meta && node.meta.label && node.meta.label.text || node.attributes.name; // TODO i18next based on ID
+    // TODO i18next based on ID
+    let label = (node.meta && node.meta.label && node.meta.label.text) || node.attributes.name;
+    if ( label.startsWith("traits.") ) {
+        label = label.replace("traits.", "").split(".").reverse().join(" ");
+        label = label.substr(0, 1).toUpperCase() + label.substr(1);
+    } else if ( label === "ID" ) {
+        label = "Email address";
+    }
 
     const props = {...node.attributes};
-    if ( node.messages ) {
+    if ( node.messages && node.messages.length > 0 ) {
         props.error = true;
         props.helperText = node.messages[0].text;
     }

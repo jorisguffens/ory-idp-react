@@ -1,8 +1,10 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {Redirect, Route, Switch, useLocation, useRouteMatch} from "react-router-dom";
 import queryString from "query-string";
 
 import {Container, Paper} from "@material-ui/core";
+
+import {useKratos} from "../../../hooks/kratos";
 
 import ErrorBoundary from "../../common/errorBoundary/errorBoundary";
 import DefaultLoader from "../../common/defaultLoader/defaultLoader";
@@ -12,16 +14,34 @@ import Login from "./login/login";
 import Register from "./register/register";
 
 export default function Authentication() {
+
+    const kratos = useKratos();
     const {url} = useRouteMatch();
+
+    function initLogin() {
+        return kratos.initializeSelfServiceLoginViaBrowserFlow();
+    }
+
+    function fetchLogin(id) {
+        return kratos.getSelfServiceLoginFlow(id);
+    }
+
+    function initRegister() {
+        return kratos.initializeSelfServiceRegistrationViaBrowserFlow();
+    }
+
+    function fetchRegister(id) {
+        return kratos.getSelfServiceRegistrationFlow(id);
+    }
 
     return (
         <Switch>
             <Route exact path={url + "/login"}>
-                <WrappedAuthRoute initUrl={"/.ory/kratos/self-service/login/browser"} component={Login}/>
+                <WrappedAuthRoute init={initLogin} fetch={fetchLogin} component={Login}/>
             </Route>
 
             <Route exact path={url + "/register"}>
-                <WrappedAuthRoute initUrl={"/.ory/kratos/self-service/registration/browser"} component={Register}/>
+                <WrappedAuthRoute init={initRegister} fetch={fetchRegister} component={Register}/>
             </Route>
 
             <Redirect to={url + "/login"}/>
@@ -29,29 +49,33 @@ export default function Authentication() {
     )
 }
 
-function WrappedAuthRoute({initUrl, component}) {
+function WrappedAuthRoute({init, fetch, component}) {
+
     const location = useLocation();
     const params = queryString.parse(location.search);
+    const [flow, setFlow] = useState(null);
 
-    // initialize login flow
-    if (!params.flow) {
+    useEffect(() => {
+        let unmounted = false;
 
-        // just a reminder to use this app behind a proxy, even I fall for the same mistake everytime
-        const val = sessionStorage.getItem("redirect_count");
-        if ( val >= 5 ) {
-            sessionStorage.setItem("redirect_count", "0");
-            window.alert("Too many redirects, please use this app behind a proxy!");
-            return null;
-        } else {
-            sessionStorage.setItem("redirect_count", (val ? parseInt(val) + 1 : 1) + "");
+        const func = params.flow ? () => fetch(params.flow) : init;
+        func().then(res => {
+            if (unmounted) return;
+            setFlow(res.data);
+            console.log(res.data);
+        });
+
+        return () => {
+            unmounted = true;
         }
-
-        window.location.href = initUrl;
-        return null;
-    }
+    }, []);
 
     function handleError() {
         //window.location.href = initUrl;
+    }
+
+    if ( flow == null ) {
+        return <DefaultLoader/>
     }
 
     const Comp = component;
@@ -60,7 +84,7 @@ function WrappedAuthRoute({initUrl, component}) {
             <Center fillPage vertical>
                 <Container maxWidth={"xs"}>
                     <Paper square align={"center"}>
-                        <Comp flowId={params.flow}/>
+                        <Comp flowInfo={flow}/>
                     </Paper>
                 </Container>
             </Center>

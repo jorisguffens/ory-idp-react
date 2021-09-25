@@ -16,7 +16,7 @@ function Layout({children}) {
     const [drawerOpen, setDrawerOpen] = useState(false);
 
     useEffect(() => {
-        if ( desktop ) {
+        if (desktop) {
             setDrawerOpen(false);
         }
     }, [desktop]);
@@ -34,9 +34,11 @@ function Layout({children}) {
                             onClose={() => setDrawerOpen(false)}/>
 
                     <main className={style.body}>
-                        <Container maxWidth="lg">
-                            {children}
-                        </Container>
+                        <div className={style.mainContent}>
+                            <Container maxWidth="lg">
+                                {children}
+                            </Container>
+                        </div>
 
                         <Footer/>
                     </main>

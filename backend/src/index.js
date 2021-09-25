@@ -1,10 +1,12 @@
-
 // .env files support
 require('dotenv').config();
 
 // webserver
 const express = require('express');
 const app = express();
+
+// cookie middleware
+app.use(require("cookie-parser")());
 
 // session middleware
 app.use(
@@ -17,17 +19,20 @@ app.use(
 )
 
 // routes
-const login = require('./routes/login');
-app.get('/login', login);
+app.get('/login', require('./routes/login'));
+app.get('/consent', require('./routes/consent'));
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
 });
 
 // error handler
-app.use((err, req, res) => {
-    console.error(err.stack);
-    res.status(500).send(JSON.stringify(err, null, 2));
+app.use((req, res, next) => {
+    try {
+        next();
+    } catch(err) {
+        res.status(500).send(JSON.stringify(err, null, 2));
+    }
 });
 
 // listen

@@ -14,7 +14,7 @@ import {
     SwipeableDrawer, Typography
 } from "@material-ui/core";
 
-import {useAuth} from "../../../hooks/kratos";
+import {useAuth, logout} from "../../../hooks/kratos";
 
 import style from "./drawer.module.scss";
 
@@ -29,7 +29,7 @@ export default function Drawer({open, onClose, onOpen}) {
                 <div className={style.avatar}>
                     <Avatar/>
                     <Typography className={style.avatarName}>
-                        { user.traits.name.first } { user.traits.name.last }
+                        { user.fullname }
                     </Typography>
                 </div>
             ) : null }
@@ -59,14 +59,25 @@ export default function Drawer({open, onClose, onOpen}) {
                 <Divider/>
                 <br/>
 
-                <a href={"/.ory/kratos/self-service/browser/flows/logout"}>
+                <RouterLink to={"/developer/oauth2-apps"}>
                     <ListItem button>
                         <ListItemIcon>
-                            <i className="fas fa-sign-out-alt"/>
+                            <i className="fas fa-code"/>
                         </ListItemIcon>
-                        <ListItemText primary="Logout"/>
+                        <ListItemText primary="Developer dashboard"/>
                     </ListItem>
-                </a>
+                </RouterLink>
+
+                <br/>
+                <Divider/>
+                <br/>
+
+                <ListItem button onClick={() => logout()}>
+                    <ListItemIcon>
+                        <i className="fas fa-sign-out-alt"/>
+                    </ListItemIcon>
+                    <ListItemText primary="Logout"/>
+                </ListItem>
             </List>
         </>
     );

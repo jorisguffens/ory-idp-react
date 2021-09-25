@@ -70,11 +70,11 @@ services:
     environment:
       - DSN=postgres://$DB_USER:$DB_PASSWORD@sidp-postgres:5432/hydra?sslmode=disable&max_conns=20&max_idle_conns=4
       - LOG_LEAK_SENSITIVE_VALUES=true
-      - URLS_SELF_ISSUER=http://127.0.0.1
-      - URLS_SELF_PUBLIC=http://127.0.0.1
-      - URLS_CONSENT=http://127.0.0.1/auth/hydra/consent
-      - URLS_LOGIN=http://127.0.0.1/auth/hydra/login
-      - URLS_LOGOUT=http://127.0.0.1/logout
+      - URLS_SELF_ISSUER=http://127.0.0.1/.ory/hydra
+      - URLS_SELF_PUBLIC=http://127.0.0.1/.ory/hydra
+      - URLS_CONSENT=http://127.0.0.1/oauth/consent
+      - URLS_LOGIN=http://127.0.0.1/oauth/login
+      - URLS_LOGOUT=http://127.0.0.1/oauth/logout
       - SECRETS_SYSTEM=-->>--YouReallyNeedToChangeThis--<<--
       - OIDC_SUBJECT_IDENTIFIERS_SUPPORTED_TYPES=public,pairwise
       - OIDC_SUBJECT_IDENTIFIERS_PAIRWISE_SALT=-->>--YouReallyNeedToChangeThis--<<--

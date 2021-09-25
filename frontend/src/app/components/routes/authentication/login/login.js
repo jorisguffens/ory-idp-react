@@ -1,40 +1,18 @@
 import React, {useState} from "react";
-import {useHistory} from "react-router";
+import {Link, useHistory} from "react-router-dom";
 
 import {Typography} from "@material-ui/core";
 import {Alert} from "@material-ui/lab";
 
-import {submitForm, useDataLoader, useKratos} from "../../../../hooks/kratos";
-import DefaultLoader from "../../../common/defaultLoader/defaultLoader";
+import {submitForm, useKratos} from "../../../../hooks/kratos";
 import PasswordForm from "../../../common/passwordForm/passwordForm";
-import {Link} from "react-router-dom";
 
-export default function Login({flowId}) {
-
-    const kratos = useKratos();
-    const {data, error, isLoading} = useDataLoader(() => {
-        return kratos.getSelfServiceLoginFlow(flowId).then(({data}) => data);
-    });
-
-    if (error) {
-        throw error;
-    }
-
-    if (isLoading) {
-        return <DefaultLoader/>
-    }
-
-    return <LoginForm flowInfo={data}/>
-}
-
-function LoginForm({flowInfo}) {
+export default function Login({flowInfo}) {
 
     const kratos = useKratos();
 
     const [flow, setFlow] = useState(flowInfo);
     const config = flow.ui;
-
-    const history = useHistory();
 
     // handling
     const [busy, setBusy] = useState(false);
@@ -47,7 +25,7 @@ function LoginForm({flowInfo}) {
 
         setBusy(true);
 
-        submitForm(config.action, config.method, nodes, history).then(success => {
+        submitForm(config.action, config.method, nodes, flow.return_to).then(success => {
             if (success) {
                 return;
             }

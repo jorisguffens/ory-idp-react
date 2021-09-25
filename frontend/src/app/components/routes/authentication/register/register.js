@@ -1,36 +1,16 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
+import {Link, useHistory} from "react-router-dom";
 
-import {Button, CircularProgress, Link, Typography} from "@material-ui/core";
+import {Typography} from "@material-ui/core";
 import {Alert} from "@material-ui/lab";
 
-import {parseMethods, submitForm, useDataLoader, useKratos} from "../../../../hooks/kratos";
+import {submitForm, useKratos} from "../../../../hooks/kratos";
 
 import PasswordForm from "../../../common/passwordForm/passwordForm";
-import DefaultLoader from "../../../common/defaultLoader/defaultLoader";
-import {useHistory} from "react-router";
 
-export default function Register({ flowId }) {
+export default function Register({ flowInfo }) {
 
     const kratos = useKratos();
-    const { data, error, isLoading } = useDataLoader(() => {
-        return kratos.getSelfServiceRegistrationFlow(flowId).then(({data}) => data);
-    });
-
-    if ( error ) {
-        throw error;
-    }
-
-    if ( isLoading ) {
-        return <DefaultLoader/>
-    }
-
-    return <RegisterForm flowInfo={data} />
-}
-
-function RegisterForm({ flowInfo }) {
-
-    const kratos = useKratos();
-    const history = useHistory();
 
     const [flow, setFlow] = useState(flowInfo);
     const config = flow.ui;
@@ -45,7 +25,7 @@ function RegisterForm({ flowInfo }) {
         }
         setBusy(true);
 
-        submitForm(config.action, config.method, nodes, history).then(success => {
+        submitForm(config.action, config.method, nodes, flow.return_to).then(success => {
             if ( success ) {
                 return;
             }

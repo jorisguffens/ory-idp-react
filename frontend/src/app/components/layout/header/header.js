@@ -13,7 +13,7 @@ export default function Header({onDrawerToggle}) {
                 <div className={style.contents}>
                     <div className={style.title}>
                         <Link to={"/"}>
-                            Pogboer
+                            ORY React Stack
                         </Link>
                     </div>
 

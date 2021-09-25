@@ -13,7 +13,6 @@ export default function Profile() {
         <Layout>
             <Container maxWidth={"lg"}>
                 <Paper square>
-
                     <Typography variant={"h1"}>Profile</Typography>
 
                     <Typography>

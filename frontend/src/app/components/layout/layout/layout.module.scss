@@ -3,12 +3,19 @@
 }
 
 .content {
-  position: relative;
   display: flex;
-  flex: 1 0;
 }
 
 .body {
   flex: 1 0 auto;
   padding-top: 25px;
+
+  // This pushes the footer to the bottom of the page
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 64px);
+}
+
+.mainContent {
+  flex: 1;
 }
