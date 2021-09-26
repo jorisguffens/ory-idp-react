@@ -14,6 +14,8 @@ import Login from "./login/login";
 import Register from "./register/register";
 import Consent from "./consent/consent";
 
+import style from "./auth.module.scss";
+
 export default function Auth() {
 
     const kratos = useKratos();
@@ -86,7 +88,7 @@ function WrappedAuthRoute({init, fetch, component}) {
         <ErrorBoundary fallback={<DefaultLoader/>} onError={handleError}>
             <Center fillPage vertical>
                 <Container maxWidth={"xs"}>
-                    <Paper square align={"center"}>
+                    <Paper square className={style.paper}>
                         <Comp flowInfo={flow}/>
                     </Paper>
                 </Container>

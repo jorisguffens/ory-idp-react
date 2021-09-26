@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import clsx from "clsx";
 
 import {
     Avatar,
@@ -10,13 +11,16 @@ import {
     ListItem,
     ListItemText,
     ListItemIcon,
-    Button
+    Button, LinearProgress
 } from "@mui/material";
+
+import {useAuth, useDataLoader} from "../../../../hooks/kratos";
 
 import DefaultLoader from "../../../common/defaultLoader/defaultLoader";
 import ErrorBoundary from "../../../common/errorBoundary/errorBoundary";
 import Center from "../../../common/center/center";
-import {useAuth, useDataLoader} from "../../../../hooks/kratos";
+
+import style from "../auth.module.scss";
 
 
 export default function Consent() {
@@ -37,7 +41,7 @@ export default function Consent() {
         <ErrorBoundary fallback={<DefaultLoader/>} onError={handleError}>
             <Center fillPage vertical>
                 <Container maxWidth={"sm"}>
-                    <Paper square>
+                    <Paper square className={style.paper}>
                         <ConsentForm data={data}/>
                     </Paper>
                 </Container>
@@ -47,8 +51,6 @@ export default function Consent() {
 }
 
 function ConsentForm({data}) {
-    console.log(data);
-
     const client = data.client
 
     const {user, isLoading} = useAuth();
@@ -59,7 +61,7 @@ function ConsentForm({data}) {
         return <DefaultLoader/>
     }
 
-    function reject() {
+    function post(body) {
         if (busy) {
             return;
         }
@@ -68,9 +70,7 @@ function ConsentForm({data}) {
         fetch("/oauth/consent", {
             method: 'POST',
             credentials: "include",
-            body: JSON.stringify({
-                consent: false
-            }),
+            body: JSON.stringify(body),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -78,34 +78,33 @@ function ConsentForm({data}) {
             return res.json();
         }).then(res => {
             window.location.href = res.redirect_to;
+        }).catch(err => {
+            setBusy(false);
+        });
+    }
+
+    function reject() {
+        post({
+            consent: false
         });
     }
 
     function allow() {
-        if (busy) {
-            return;
-        }
-        setBusy(true);
-
-        fetch("/oauth/consent", {
-            method: 'POST',
-            credentials: "include",
-            body: JSON.stringify({
-                grant_scope: data.requested_scope,
-                consent: true
-            }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(res => {
-            return res.json();
-        }).then(res => {
-            window.location.href = res.redirect_to;
+        post({
+            grant_scope: data.requested_scope,
+            consent: true
         });
     }
 
     return (
-        <>
+        <div className={clsx(busy && style.busy)}>
+            {busy && (
+                <>
+                    <div className={style.busyOverlay}>&nbsp;</div>
+                    <div className={style.busyProgress}><LinearProgress/></div>
+                </>
+            )}
+
             <div align={"center"}>
                 <Stack direction={"row"} justifyContent={"center"} spacing={-1}>
                     <ClientAvatar client={client} width={56} height={56}/>
@@ -149,20 +148,18 @@ function ConsentForm({data}) {
                 </div>
                 <br/><br/>
 
-                <form action="/oauth/consent" method="POST">
-                    <input type="hidden" name="grant_scope" value={data.requested_scope}/>
-
-                    <Stack direction={"row"} justifyContent={"end"} spacing={2}>
-                        <Button variant={"text"} color={"primary"} onClick={reject}>Cancel</Button>
-                        <Button variant={"contained"} color={"primary"}
-                                disableElevation={true} onClick={allow}>
-                            Allow
-                        </Button>
-                    </Stack>
-                </form>
+                <Stack direction={"row"} justifyContent={"end"} spacing={2}>
+                    <Button variant={"text"} color={"primary"} onClick={reject}>
+                        Cancel
+                    </Button>
+                    <Button variant={"contained"} color={"primary"}
+                            disableElevation={true} onClick={allow}>
+                        Allow
+                    </Button>
+                </Stack>
             </Container>
 
-        </>
+        </div>
     )
 }
 

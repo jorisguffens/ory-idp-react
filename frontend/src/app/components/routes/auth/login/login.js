@@ -1,10 +1,13 @@
 import React, {useState} from "react";
+import clsx from "clsx";
 import {Link} from "react-router-dom";
 
-import {Typography, Alert} from "@mui/material";
+import {Typography, Alert, LinearProgress} from "@mui/material";
 
 import {submitForm, useKratos} from "../../../../hooks/kratos";
 import PasswordForm from "../../../common/passwordForm/passwordForm";
+
+import style from "../auth.module.scss";
 
 export default function Login({flowInfo}) {
 
@@ -18,7 +21,7 @@ export default function Login({flowInfo}) {
     const [errors, setErrors] = useState("");
 
     function submit(nodes) {
-        if ( busy ) {
+        if (busy) {
             return;
         }
 
@@ -32,7 +35,7 @@ export default function Login({flowInfo}) {
             kratos.getSelfServiceLoginFlow(flow.id).then(({data}) => {
                 setFlow(data);
 
-                if ( data.ui.messages ) {
+                if (data.ui.messages) {
                     setErrors(data.ui.messages.map(msg => msg.text).join("\n"));
                 }
             });
@@ -47,7 +50,14 @@ export default function Login({flowInfo}) {
     }
 
     return (
-        <>
+        <div className={clsx(busy && style.busy)}>
+            {busy && (
+                <>
+                    <div className={style.busyOverlay}>&nbsp;</div>
+                    <div className={style.busyProgress}><LinearProgress/></div>
+                </>
+            )}
+
             <Typography variant="h2" component={"h1"}>Login</Typography>
             <br/>
 
@@ -73,6 +83,6 @@ export default function Login({flowInfo}) {
             <Link to={"/auth/register"}>
                 I don't have an account yet.
             </Link>
-        </>
+        </div>
     )
 }

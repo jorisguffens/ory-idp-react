@@ -1,11 +1,13 @@
 import React, {useState} from "react";
 import {Link} from "react-router-dom";
 
-import {Typography, Alert} from "@mui/material";
+import {Typography, Alert, LinearProgress} from "@mui/material";
 
 import {submitForm, useKratos} from "../../../../hooks/kratos";
 
 import PasswordForm from "../../../common/passwordForm/passwordForm";
+import clsx from "clsx";
+import style from "../auth.module.scss";
 
 export default function Register({ flowInfo }) {
 
@@ -47,7 +49,14 @@ export default function Register({ flowInfo }) {
     }
 
     return (
-        <>
+        <div className={clsx(busy && style.busy)}>
+            {busy && (
+                <>
+                    <div className={style.busyOverlay}>&nbsp;</div>
+                    <div className={style.busyProgress}><LinearProgress/></div>
+                </>
+            )}
+
             <Typography variant="h2" component={"h1"}>Register</Typography>
             <br/>
 
@@ -74,6 +83,6 @@ export default function Register({ flowInfo }) {
             <Link to={"/auth/login"}>
                 I already have an account.
             </Link>
-        </>
+        </div>
     )
 }

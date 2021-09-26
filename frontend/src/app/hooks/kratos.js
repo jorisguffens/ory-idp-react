@@ -88,13 +88,22 @@ export function submitForm(url, method, nodes, return_to = null) {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     }).then(res => {
+        // just refresh info
+        if ( res.url === window.location.href ) {
+            return false;
+        }
+
         if ( return_to ) {
             window.location.href = return_to;
-            return;
+            return true;
         }
-        console.log(res.url);
+
+        if ( !res.redirected ) {
+            return false;
+        }
+
         window.location.href = res.url;
-        return false;
+        return true;
     });
 }
 
