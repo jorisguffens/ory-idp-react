@@ -75,6 +75,7 @@ services:
       - URLS_CONSENT=http://127.0.0.1/oauth/consent
       - URLS_LOGIN=http://127.0.0.1/oauth/login
       - URLS_LOGOUT=http://127.0.0.1/oauth/logout
+      - SERVE_PUBLIC_CORS_ENABLED=true
       - SECRETS_SYSTEM=-->>--YouReallyNeedToChangeThis--<<--
       - OIDC_SUBJECT_IDENTIFIERS_SUPPORTED_TYPES=public,pairwise
       - OIDC_SUBJECT_IDENTIFIERS_PAIRWISE_SALT=-->>--YouReallyNeedToChangeThis--<<--
