@@ -1,7 +1,7 @@
 import React from "react";
 import {Link} from "react-router-dom";
 
-import {Container, Paper, Typography} from "@material-ui/core";
+import {Container, Paper, Typography} from "@mui/material";
 import Center from "../../common/center/center";
 
 

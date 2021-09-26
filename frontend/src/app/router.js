@@ -1,12 +1,12 @@
 import React from "react";
 import {Redirect, Route, Switch, useLocation} from "react-router-dom";
 
-import {CircularProgress} from "@material-ui/core";
+import {CircularProgress} from "@mui/material";
 
 import {useAuth} from "./hooks/kratos";
 
 import Error from "./components/routes/selfService/error/error";
-import Authentication from "./components/routes/authentication/authentication";
+import Auth from "./components/routes/auth/auth";
 import Profile from "./components/routes/selfService/profile/profile";
 import Developer from "./components/routes/developer/developer";
 import Center from "./components/common/center/center";
@@ -31,8 +31,8 @@ export default function Router() {
                 {/* Errors */}
                 <Route exact path={"/error"} component={Error}/>
 
-                {/* Authentication */}
-                <Route path={"/auth"} component={Authentication}/>
+                {/* Auth */}
+                <Route path={"/auth"} component={Auth}/>
 
                 {/* Account settings */}
                 <Route exact path={"/"}>

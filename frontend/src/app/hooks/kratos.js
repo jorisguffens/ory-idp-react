@@ -90,10 +90,10 @@ export function submitForm(url, method, nodes, return_to = null) {
     }).then(res => {
         if ( return_to ) {
             window.location.href = return_to;
-        } else {
-            console.log(res.url); // TODO
-            //window.location.href = res.url;
+            return;
         }
+        console.log(res.url);
+        window.location.href = res.url;
         return false;
     });
 }

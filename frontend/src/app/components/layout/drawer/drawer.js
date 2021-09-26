@@ -12,7 +12,7 @@ import {
     ListItemIcon,
     ListItemText,
     SwipeableDrawer, Typography
-} from "@material-ui/core";
+} from "@mui/material";
 
 import {useAuth, logout} from "../../../hooks/kratos";
 

@@ -1,6 +1,6 @@
 import React from "react";
 import Layout from "../../../layout/layout/layout";
-import {Container, Paper, Typography} from "@material-ui/core";
+import {Container, Paper, Typography} from "@mui/material";
 
 export default function OAuth2Apps() {
 

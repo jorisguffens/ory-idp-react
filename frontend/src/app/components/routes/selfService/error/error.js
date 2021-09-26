@@ -2,7 +2,7 @@ import React from "react";
 import {useLocation} from "react-router-dom";
 import queryString from "query-string";
 
-import {Container, Paper, Typography} from "@material-ui/core";
+import {Container, Paper, Typography} from "@mui/material";
 
 import {useSelfServiceError} from "../../../../hooks/kratos";
 

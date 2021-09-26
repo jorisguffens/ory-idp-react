@@ -1,8 +1,7 @@
 import React, {useState} from "react";
-import {Link, useHistory} from "react-router-dom";
+import {Link} from "react-router-dom";
 
-import {Typography} from "@material-ui/core";
-import {Alert} from "@material-ui/lab";
+import {Typography, Alert} from "@mui/material";
 
 import {submitForm, useKratos} from "../../../../hooks/kratos";
 

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {Redirect, Route, Switch, useLocation, useRouteMatch} from "react-router-dom";
 import queryString from "query-string";
 
-import {Container, Paper} from "@material-ui/core";
+import {Container, Paper} from "@mui/material";
 
 import {useKratos} from "../../../hooks/kratos";
 
@@ -12,8 +12,9 @@ import Center from "../../common/center/center";
 
 import Login from "./login/login";
 import Register from "./register/register";
+import Consent from "./consent/consent";
 
-export default function Authentication() {
+export default function Auth() {
 
     const kratos = useKratos();
     const {url} = useRouteMatch();
@@ -43,6 +44,8 @@ export default function Authentication() {
             <Route exact path={url + "/register"}>
                 <WrappedAuthRoute init={initRegister} fetch={fetchRegister} component={Register}/>
             </Route>
+
+            <Route exact path={url + "/consent"} component={Consent}/>
 
             <Redirect to={url + "/login"}/>
         </Switch>

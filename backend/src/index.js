@@ -5,10 +5,17 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 
-// cookie middleware
+// MIDDLEWARE
+
+// body parser
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded());
+app.use(bodyParser.json());
+
+// cookies
 app.use(require("cookie-parser")());
 
-// session middleware
+// sessions
 app.use(
     require('express-session')({
         secret: 'POGGERS',
@@ -18,24 +25,25 @@ app.use(
     })
 )
 
-// routes
+// ROUTES
+
+// login
 app.get('/login', require('./routes/login'));
-app.get('/consent', require('./routes/consent'));
 
-app.get('/', (req, res) => {
-    res.send('Hello World!')
+// consent
+const cm = require('./routes/consent');
+app.get('/consent', cm.consent);
+app.get('/consentInfo', cm.consentInfo);
+app.post('/consent', cm.consentFinish);
+
+// ERROR HANDLER
+app.use((err, req, res, next) => {
+    res.status(500).json({
+        error: err.message
+    });
 });
 
-// error handler
-app.use((req, res, next) => {
-    try {
-        next();
-    } catch(err) {
-        res.status(500).send(JSON.stringify(err, null, 2));
-    }
-});
-
-// listen
+// LISTEN
 app.listen(3200, () => {
     console.log('Listening at http://localhost:3200');
 });

@@ -1,6 +1,8 @@
 import React from 'react';
 import {BrowserRouter} from "react-router-dom";
-import {StylesProvider, ThemeProvider} from '@material-ui/core/styles';
+
+import {ThemeProvider, StyledEngineProvider} from '@mui/material/styles';
+import {CssBaseline} from "@mui/material";
 
 import theme from "./theme";
 
@@ -11,18 +13,18 @@ function App() {
         <div>
             <Router/>
         </div>
-        
     )
 }
 
 export default function Wrapper() {
     return (
         <BrowserRouter>
-            <ThemeProvider theme={theme}>
-                <StylesProvider injectFirst>
-                    <App />
-                </StylesProvider>
-            </ThemeProvider>
+            <StyledEngineProvider injectFirst>
+                <ThemeProvider theme={theme}>
+                    <CssBaseline/>
+                    <App/>
+                </ThemeProvider>
+            </StyledEngineProvider>
         </BrowserRouter>
     );
 }

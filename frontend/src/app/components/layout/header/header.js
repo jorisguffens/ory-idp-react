@@ -1,7 +1,7 @@
 import React from "react";
 import {Link} from "react-router-dom";
 
-import {AppBar, Hidden, IconButton, Toolbar} from "@material-ui/core";
+import {AppBar, Hidden, IconButton, Toolbar} from "@mui/material";
 
 import style from "./header.module.scss";
 

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 
-import {CssBaseline, Container, Toolbar, useMediaQuery, useTheme} from "@material-ui/core";
+import {CssBaseline, Container, Toolbar, useMediaQuery, useTheme} from "@mui/material";
 
 import Header from "../header/header";
 import Footer from "../footer/footer";

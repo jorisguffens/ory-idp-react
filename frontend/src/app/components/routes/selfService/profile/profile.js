@@ -1,6 +1,6 @@
 import React from "react";
 
-import {Container, Paper, Typography} from "@material-ui/core";
+import {Container, Paper, Typography} from "@mui/material";
 
 import {useAuth} from "../../../../hooks/kratos";
 import Layout from "../../../layout/layout/layout";
