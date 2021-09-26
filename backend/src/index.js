@@ -37,10 +37,15 @@ app.get('/consentInfo', cm.consentInfo);
 app.post('/consent', cm.consentFinish);
 
 // ERROR HANDLER
+const HttpError = require("./httpError");
 app.use((err, req, res, next) => {
-    res.status(500).json({
-        error: err.message
-    });
+    if ( err instanceof HttpError ) {
+        res.status(err.code).json({error: err.message});
+    } else {
+        res.status(500).json({
+            error: err.message
+        });
+    }
 });
 
 // LISTEN

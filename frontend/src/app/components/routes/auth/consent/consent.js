@@ -3,19 +3,21 @@ import clsx from "clsx";
 
 import {
     Avatar,
+    Button,
     Container,
-    Paper,
-    Typography,
-    Stack,
+    LinearProgress,
     List,
     ListItem,
-    ListItemText,
     ListItemIcon,
-    Button, LinearProgress
+    ListItemText,
+    Paper,
+    Stack,
+    Typography
 } from "@mui/material";
 
 import {useAuth, useDataLoader} from "../../../../hooks/kratos";
 
+import ErrorPage from "../../../common/errorPage/errorPage";
 import DefaultLoader from "../../../common/defaultLoader/defaultLoader";
 import ErrorBoundary from "../../../common/errorBoundary/errorBoundary";
 import Center from "../../../common/center/center";
@@ -26,11 +28,24 @@ import style from "../auth.module.scss";
 export default function Consent() {
 
     const {data, error, isLoading} = useDataLoader(() => {
-        return fetch("/oauth/consentInfo").then(res => res.json());
+        return fetch("/oauth/consentInfo").then(res => {
+            if ( !res.ok ) {
+                return res.json().then(json => {
+                    throw new Error(json.error);
+                })
+            }
+            return res.json()
+        });
     });
 
     if (isLoading) {
         return <DefaultLoader/>
+    }
+
+    if ( error != null ) {
+        return (
+            <ErrorPage title={"Error"} subTitle={error.message}/>
+        )
     }
 
     function handleError(err) {
@@ -136,7 +151,7 @@ function ConsentForm({data}) {
                 </List>
                 <br/>
 
-                <div>
+                <div className={style.alignLeft}>
                     <Typography component={"h2"}>
                         <strong>
                             Make sure you trust {client.client_name}

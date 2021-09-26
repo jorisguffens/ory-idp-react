@@ -1,5 +1,6 @@
 const {hydraClient} = require('../config');
 const crypto = require("crypto");
+const HttpError = require("../httpError");
 
 function createHydraSession(requestedScope, context) {
     const verifiableAddresses = context.identity.verifiable_addresses || []
@@ -18,7 +19,7 @@ async function consent(req, res, next) {
         const hydraChallenge = req.query.consent_challenge;
 
         if ( !hydraChallenge ) {
-            throw new Error("No valid OAuth session started.");
+            throw new HttpError(400, "No valid OAuth session started.");
         }
 
         const {data: body} = await hydraClient.getConsentRequest(hydraChallenge);
@@ -46,7 +47,7 @@ async function consent(req, res, next) {
 async function consentInfo(req, res, next) {
     try {
         if ( !req.session.hydraConsentChallenge ) {
-            throw new Error("No valid OAuth session started.");
+            throw new HttpError(400, "No valid OAuth session started.");
         }
 
         const hydraChallenge = req.session.hydraConsentChallenge;
@@ -73,7 +74,7 @@ async function consentInfo(req, res, next) {
 async function consentFinish(req, res, next) {
     try {
         if ( !req.session.hydraConsentChallenge ) {
-            throw new Error("No valid OAuth session started.");
+            throw new HttpError(400, "No valid OAuth session started.");
         }
 
         const hydraChallenge = req.session.hydraConsentChallenge;

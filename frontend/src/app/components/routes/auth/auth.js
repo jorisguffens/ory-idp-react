@@ -6,6 +6,7 @@ import {Container, Paper} from "@mui/material";
 
 import {useKratos} from "../../../hooks/kratos";
 
+import ErrorPage from "../../common/errorPage/errorPage";
 import ErrorBoundary from "../../common/errorBoundary/errorBoundary";
 import DefaultLoader from "../../common/defaultLoader/defaultLoader";
 import Center from "../../common/center/center";
@@ -58,7 +59,9 @@ function WrappedAuthRoute({init, fetch, component}) {
 
     const location = useLocation();
     const params = queryString.parse(location.search);
+
     const [flow, setFlow] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         let unmounted = false;
@@ -68,15 +71,21 @@ function WrappedAuthRoute({init, fetch, component}) {
             if (unmounted) return;
             setFlow(res.data);
             console.log(res.data);
-        });
+        }).catch(err => {
+            setError(err);
+        })
 
         return () => {
             unmounted = true;
         }
     }, []);
 
-    function handleError() {
-        //window.location.href = initUrl;
+    function handleError(err) {
+        setError(err);
+    }
+
+    if ( error != null ) {
+        return <ErrorPage title={"Error"} subTitle={error.message}/>
     }
 
     if ( flow == null ) {

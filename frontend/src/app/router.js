@@ -5,12 +5,13 @@ import {CircularProgress} from "@mui/material";
 
 import {useAuth} from "./hooks/kratos";
 
+import ErrorPage from "./components/common/errorPage/errorPage";
+
 import Error from "./components/routes/selfService/error/error";
 import Auth from "./components/routes/auth/auth";
 import Profile from "./components/routes/selfService/profile/profile";
 import Developer from "./components/routes/developer/developer";
 import Center from "./components/common/center/center";
-import Error404 from "./components/routes/error404/error404";
 import OAuth2Apps from "./components/routes/developer/oauth2-apps/oauth2-apps";
 
 function ScrollToTop() {
@@ -45,7 +46,7 @@ export default function Router() {
                 <ProtectedRoute exact path={"/developer"} component={Developer}/>
                 <ProtectedRoute exact path={"/developer/oauth2-apps"} component={OAuth2Apps}/>
 
-                <Error404/>
+                <ErrorPage title={"404"} subTitle={"The page you are looking for does not exist."}/>
             </Switch>
         </>
     )
